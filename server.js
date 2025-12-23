@@ -4,6 +4,7 @@ import http from 'http';
 import { Server as IOServer } from 'socket.io';
 import cors from 'cors';
 import db from './models/index.js';
+import apiRoutes from './routes/index.js';
 
 dotenv.config();
 
@@ -13,53 +14,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Basic routes
-app.get('/health', (req, res) => res.json({ ok: true }));
+// Modular routes
+app.use('/', apiRoutes);
 
-app.get('/leaderboard', async (req, res) => {
-  try {
-    const users = await db.User.findAll({ order: [['wins', 'DESC']], attributes: ['id', 'username', 'wins'] });
-    res.json(users);
-  } catch (err) {
-    console.error('Leaderboard error', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// list recent completed games
-app.get('/games', async (req, res) => {
-  try {
-    const games = await db.Game.findAll({ where: { result: ['win', 'draw', 'forfeit'] }, order: [['endedAt', 'DESC']], limit: 50 });
-    res.json(games);
-  } catch (err) {
-    console.error('GET /games error', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-app.get('/games/:id', async (req, res) => {
-  try {
-    const game = await db.Game.findByPk(req.params.id);
-    if (!game) return res.status(404).json({ error: 'Not Found' });
-    res.json(game);
-  } catch (err) {
-    console.error('GET /games/:id error', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-// simple user creation
-app.post('/users', async (req, res) => {
-  try {
-    const { username } = req.body;
-    if (!username) return res.status(400).json({ error: 'username required' });
-    const [user] = await db.User.findOrCreate({ where: { username }, defaults: { username } });
-    res.json({ id: user.id, username: user.username, wins: user.wins });
-  } catch (err) {
-    console.error('POST /users error', err);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 const httpServer = http.createServer(app);
 const io = new IOServer(httpServer, {
