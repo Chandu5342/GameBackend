@@ -39,6 +39,16 @@ matchmaker.on('countdown', (player, remainingSec) => {
   }
 });
 
+// forward leaderboard updates emitted by GameService to all connected clients
+// (GameService emits 'leaderboard' with an array of users)
+gameService.on('leaderboard', (topList) => {
+  try {
+    io && io.emit && io.emit('leaderboard:update', topList);
+  } catch (err) {
+    console.error('Failed to broadcast leaderboard update', err);
+  }
+});
+
 io.on('connection', (socket) => {
   console.log('Socket connected', socket.id);
 

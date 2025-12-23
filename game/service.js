@@ -1,9 +1,11 @@
+import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
 import { ConnectFour } from './index.js';
 import db from '../models/index.js';
 
-export default class GameService {
+export default class GameService extends EventEmitter {
   constructor({ forfeitTimeoutMs = 30000, persist = true } = {}) {
+    super();
     this.games = new Map(); // id -> game object
     this.forfeitTimeoutMs = forfeitTimeoutMs;
     this.forfeitTimers = new Map(); // gameId -> timer
@@ -171,7 +173,7 @@ export default class GameService {
     // persist game and update leaderboard if desired
     try {
       if (this.persist) {
-        await db.Game.create({
+        const created = await db.Game.create({
           id: game.id,
           players: game.players.map((p) => ({ id: p.id, username: p.username })),
           winnerId: game.winner || null,
@@ -182,8 +184,15 @@ export default class GameService {
           durationSeconds: game.durationSeconds
         });
 
+        console.log('Persisted game', created.id);
+
         if (game.winner) {
           await db.User.increment('wins', { where: { id: game.winner } });
+          console.log('Incremented wins for', game.winner);
+
+          // fetch updated top leaderboard and emit event so server can broadcast
+          const top = await db.User.findAll({ order: [['wins', 'DESC']], attributes: ['id', 'username', 'wins'], limit: 10 });
+          this.emit('leaderboard', top);
         }
       }
     } catch (err) {
