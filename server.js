@@ -72,8 +72,15 @@ import Matchmaker from './matchmaking/matchmaker.js';
 import GameService from './game/service.js';
 import { chooseMove } from './game/bot.js';
 
-const matchmaker = new Matchmaker(10000);
+const matchmaker = new Matchmaker(20000);
 const gameService = new GameService();
+
+// forward countdown events from matchmaker to individual sockets
+matchmaker.on('countdown', (player, remainingSec) => {
+  if (player && player.socket && player.socket.emit) {
+    player.socket.emit('queue:countdown', { remaining: remainingSec });
+  }
+});
 
 io.on('connection', (socket) => {
   console.log('Socket connected', socket.id);
