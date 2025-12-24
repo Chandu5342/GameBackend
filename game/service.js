@@ -55,6 +55,9 @@ export default class GameService extends EventEmitter {
     const game = this.games.get(gameId);
     if (!game) return { error: 'NotFound' };
 
+    // disallow moves on finished games
+    if (game.result !== 'ongoing') return { error: 'GameFinished' };
+
     const playerIndex = game.players.findIndex((p) => p.id === playerId);
     if (playerIndex === -1) return { error: 'NotPlayer' };
 
@@ -155,8 +158,19 @@ export default class GameService extends EventEmitter {
     game.endedAt = new Date();
     game.durationSeconds = Math.floor((game.endedAt - game.startedAt) / 1000);
 
-    // notify players
-    for (const p of game.players) if (p.socket && p.socket.emit) p.socket.emit('game:ended', { result: 'forfeit', winner: game.winner });
+    // notify players with final board and ended event
+    for (const p of game.players) if (p.socket && p.socket.emit) {
+      p.socket.emit('game:update', {
+        gameId: game.id,
+        board: game.engine.board,
+        result: game.result,
+        winner: game.winner,
+        currentTurn: game.currentTurn,
+        lastMove: game.moves.length ? game.moves[game.moves.length - 1] : null,
+        bot: false
+      });
+      p.socket.emit('game:ended', { result: 'forfeit', winner: game.winner });
+    }
 
     // clear any timer
     const timer = this.forfeitTimers.get(game.id);
