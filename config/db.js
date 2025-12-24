@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
 
+process.env.NODE_OPTIONS = '--dns-result-order=ipv4first';
+
 dotenv.config();
 
 const {
@@ -23,7 +25,6 @@ const commonOptions = {
   }
 };
 
-// If a full connection URL is provided (e.g. Supabase), prefer it and enable SSL options
 const sequelize = DATABASE_URL
   ? new Sequelize(DATABASE_URL, {
       ...commonOptions,
