@@ -55,9 +55,6 @@ export default class GameService extends EventEmitter {
     const game = this.games.get(gameId);
     if (!game) return { error: 'NotFound' };
 
-    // disallow moves on finished games
-    if (game.result !== 'ongoing') return { error: 'GameFinished' };
-
     const playerIndex = game.players.findIndex((p) => p.id === playerId);
     if (playerIndex === -1) return { error: 'NotPlayer' };
 
@@ -158,19 +155,8 @@ export default class GameService extends EventEmitter {
     game.endedAt = new Date();
     game.durationSeconds = Math.floor((game.endedAt - game.startedAt) / 1000);
 
-    // notify players with final board and ended event
-    for (const p of game.players) if (p.socket && p.socket.emit) {
-      p.socket.emit('game:update', {
-        gameId: game.id,
-        board: game.engine.board,
-        result: game.result,
-        winner: game.winner,
-        currentTurn: game.currentTurn,
-        lastMove: game.moves.length ? game.moves[game.moves.length - 1] : null,
-        bot: false
-      });
-      p.socket.emit('game:ended', { result: 'forfeit', winner: game.winner });
-    }
+    // notify players
+    for (const p of game.players) if (p.socket && p.socket.emit) p.socket.emit('game:ended', { result: 'forfeit', winner: game.winner });
 
     // clear any timer
     const timer = this.forfeitTimers.get(game.id);
@@ -187,10 +173,13 @@ export default class GameService extends EventEmitter {
     // persist game and update leaderboard if desired
     try {
       if (this.persist) {
-        const created = await db.Game.create({
+        await db.Game.create({
           id: game.id,
           players: game.players.map((p) => ({ id: p.id, username: p.username })),
           winnerId: game.winner || null,
+          // persist player columns for easier querying/associations
+          player1Id: game.players[0]?.id || null,
+          player2Id: game.players[1]?.id || null,
           result: game.result,
           moves: game.moves,
           startedAt: game.startedAt,
@@ -198,15 +187,16 @@ export default class GameService extends EventEmitter {
           durationSeconds: game.durationSeconds
         });
 
-        console.log('Persisted game', created.id);
-
         if (game.winner) {
           await db.User.increment('wins', { where: { id: game.winner } });
-          console.log('Incremented wins for', game.winner);
 
-          // fetch updated top leaderboard and emit event so server can broadcast
-          const top = await db.User.findAll({ order: [['wins', 'DESC']], attributes: ['id', 'username', 'wins'], limit: 10 });
-          this.emit('leaderboard', top);
+          // emit updated leaderboard to listeners
+          try {
+            const top = await db.User.findAll({ order: [['wins', 'DESC']], attributes: ['id', 'username', 'wins'], limit: 10 });
+            this.emit('leaderboard', top);
+          } catch (e) {
+            console.error('Failed to fetch leaderboard after win increment', e);
+          }
         }
       }
     } catch (err) {

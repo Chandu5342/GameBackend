@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.37% </span>
+                <span class="strong">63.41% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>19/27</span>
+                <span class='fraction'>26/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.85% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>3/7</span>
+                <span class='fraction'>5/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">57.14% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/7</span>
+                <span class='fraction'>4/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">72% </span>
+                <span class="strong">63.88% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/25</span>
+                <span class='fraction'>23/36</span>
             </div>
         
             
@@ -117,7 +117,23 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -139,6 +155,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,15 +177,18 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -174,9 +206,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import EventEmitter from 'events';
 import { v4 as uuidv4 } from 'uuid';
 &nbsp;
-// Simple in-memory matchmaker with 10s wait before falling back to bot.
+// Simple in-memory matchmaker with 20s wait before falling back to bot.
 export default class Matchmaker extends EventEmitter {
-  constructor(waitMs = <span class="branch-0 cbranch-no" title="branch not covered" >10000)</span> {
+  constructor(waitMs = <span class="branch-0 cbranch-no" title="branch not covered" >20000)</span> {
     super();
     this.waitMs = waitMs;
     this.queue = []; // items: { token, player }
@@ -191,21 +223,36 @@ export default class Matchmaker extends EventEmitter {
     if (this.queue.length &gt; 0) {
       const [first] = this.queue.splice(0, 1);
       clearTimeout(first.timer);
+      <span class="missing-if-branch" title="else path not taken" >E</span>if (first.interval) clearInterval(first.interval);
       this.emit('match', first.player, player);
       return { matched: true };
     }
 &nbsp;
-    // otherwise add to queue with timeout
+    // otherwise add to queue with timeout and per-second countdown
+    const endTime = Date.now() + this.waitMs;
+&nbsp;
+    const interval = setInterval(<span class="fstat-no" title="function not covered" >()</span> =&gt; {
+      const remainingMs = <span class="cstat-no" title="statement not covered" >endTime - Date.now();</span>
+      const remainingSec = <span class="cstat-no" title="statement not covered" >Math.max(0, Math.ceil(remainingMs / 1000));</span>
+      // emit countdown so server can forward to the player socket
+<span class="cstat-no" title="statement not covered" >      this.emit('countdown', player, remainingSec);</span>
+<span class="cstat-no" title="statement not covered" >      if (remainingMs &lt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >        clearInterval(interval);</span>
+      }
+    }, 1000);
+&nbsp;
     const timer = setTimeout(() =&gt; {
       // if still waiting, remove and emit timeout event
       const idx = this.queue.findIndex((q) =&gt; q.token === token);
       <span class="missing-if-branch" title="else path not taken" >E</span>if (idx !== -1) {
-        this.queue.splice(idx, 1);
+        const itm = this.queue.splice(idx, 1)[0];
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (itm.interval) clearInterval(itm.interval);
         this.emit('timeout', player);
       }
     }, this.waitMs);
 &nbsp;
     item.timer = timer;
+    item.interval = interval;
     this.queue.push(item);
     return { matched: false, token };
   }
@@ -214,6 +261,7 @@ export default class Matchmaker extends EventEmitter {
     const idx = <span class="cstat-no" title="statement not covered" >this.queue.findIndex(<span class="fstat-no" title="function not covered" >(q</span>) =&gt; <span class="cstat-no" title="statement not covered" >q.player.id === playerId)</span>;</span>
 <span class="cstat-no" title="statement not covered" >    if (idx !== -1) {</span>
 <span class="cstat-no" title="statement not covered" >      clearTimeout(this.queue[idx].timer);</span>
+<span class="cstat-no" title="statement not covered" >      if (this.queue[idx].interval) <span class="cstat-no" title="statement not covered" >clearInterval(this.queue[idx].interval);</span></span>
 <span class="cstat-no" title="statement not covered" >      this.queue.splice(idx, 1);</span>
 <span class="cstat-no" title="statement not covered" >      return true;</span>
     }
@@ -232,7 +280,7 @@ export default class Matchmaker extends EventEmitter {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-12-21T18:13:38.585Z
+                at 2025-12-24T02:51:03.251Z
             </div>
         <script src="../prettify.js"></script>
         <script>
