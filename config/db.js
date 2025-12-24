@@ -1,5 +1,16 @@
+import dns from 'dns';
 import dotenv from 'dotenv';
 import { Sequelize } from 'sequelize';
+
+// Prefer IPv4 when possible to avoid IPv6 routing/timeouts in some environments
+if (dns.setDefaultResultOrder) {
+  try {
+    dns.setDefaultResultOrder('ipv4first');
+    console.log('🔧 DNS result order set to prefer IPv4 (ipv4first)');
+  } catch (e) {
+    /* ignore if not supported */
+  }
+}
 
 // Simple DB connection that prefers DATABASE_URL from .env
 // If your DB password contains an `@`, either URL-encode it (preferred)
