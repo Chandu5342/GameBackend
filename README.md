@@ -108,6 +108,11 @@ Server → Client:
 ## Troubleshooting ⚠️
 - If you see `gameService.on is not a function`, make sure you are on a version where `GameService` extends EventEmitter (pull latest changes and restart).
 - If DB migrations fail, verify `DATABASE_URL` and that Postgres is reachable.
+- If your DB password contains special characters (for example `@`), make sure the password is URL-encoded in `DATABASE_URL` (e.g. `@` → `%40`) or rely on the sanitizer added in `config/db.js` which encodes common special chars automatically.
+- For hosted Postgres (e.g. Supabase), ensure SSL is enabled in production. Set `PGSSLMODE=require` in environment variables or the app will enable SSL when `DATABASE_URL` is present.
+- Use the helper scripts to debug connectivity from your deployment environment:
+  - `npm run db:test` — attempts to connect using `scripts/check-db.js`
+  - `node scripts/check-dns.js` — shows A/AAAA records for the DB host and helps diagnose IPv6 vs IPv4 issues.
 
 ---
 
