@@ -9,7 +9,8 @@
     "migrate": "sequelize db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
-    "db:test": "node scripts/test-db.js"
+    "db:test": "node scripts/check-db.js",
+    "check-dns": "node scripts/check-dns.js"
   },
   "keywords": [],
   "jest": {
